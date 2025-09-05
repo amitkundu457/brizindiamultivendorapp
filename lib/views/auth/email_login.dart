@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/views/dashboard/main_dashboard_loader.dart';
 import 'otp_login_view.dart'; // Import your OTP screen here
 import '../../services/auth_service.dart'; // Import your AuthService here
-import '../dashboard/dashboard.dart';
+import '../dashboard/saloon_dashboard.dart';
 
 class LoginToggleView extends StatefulWidget {
   const LoginToggleView({super.key});
@@ -111,7 +111,7 @@ class _LoginToggleViewState extends State<LoginToggleView> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const MainDashboardLoader(),
+                              builder: (_) => MainDashboardLoader(),
                             ), // <- Update with your page name
                           );
                         } else {

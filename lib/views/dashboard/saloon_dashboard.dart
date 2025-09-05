@@ -7,15 +7,15 @@ import '../report/package_report.dart';
 import '../report_page.dart';
 import 'balance_card.dart';
 
-class DashboardPage extends StatefulWidget {
+class Saloon_DashboardPage extends StatefulWidget {
   final User user;
-  const DashboardPage({super.key, required this.user});
+  const Saloon_DashboardPage({super.key, required this.user});
 
   @override
-  State<DashboardPage> createState() => _DashboardPageState();
+  State<Saloon_DashboardPage> createState() => _Saloon_DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class _Saloon_DashboardPageState extends State<Saloon_DashboardPage> {
   int _selectedIndex = 0;
   late User _user;
 

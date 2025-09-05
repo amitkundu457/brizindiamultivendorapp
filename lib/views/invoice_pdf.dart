@@ -5,7 +5,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-import 'dashboard/dashboard.dart';
+import 'dashboard/saloon_dashboard.dart';
 
 class InvoicePreview extends StatelessWidget {
   final Map<String, dynamic> orderData;

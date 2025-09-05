@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/RestorentProvider/RestroProductServices/DineInProvider.dart';
 import 'package:provider/provider.dart';
 import 'controllers/Jewellery_Provider/BillGetProvider.dart';
 import 'controllers/Jewellery_Provider/BillingOrderProvider.dart';
 import 'controllers/Jewellery_Provider/BillingPrintProvider.dart';
 import 'controllers/Jewellery_Provider/BillingReportProvider.dart';
 import 'controllers/Jewellery_Provider/JwelProductProvider.dart';
+import 'controllers/RestorentProvider/RestroProductServices/ParcelProvider.dart';
 import 'views/auth/login_view.dart';
 
 void main() {
@@ -17,6 +19,10 @@ void main() {
             ChangeNotifierProvider(create: (_) => BillingOrderProvider()),
             ChangeNotifierProvider(create: (_) => BillingPrintProvider()),
             ChangeNotifierProvider(create: (_) => BillingReportProvider()),
+            
+            // Restruent 
+            ChangeNotifierProvider(create: (_) => DineInProvider()),
+            ChangeNotifierProvider(create: (_) => ParcelProvider())
           ],
 
       child:  MyApp()

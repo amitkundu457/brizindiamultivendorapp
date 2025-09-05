@@ -7,12 +7,10 @@ import '../models/category_model.dart';
 import '../models/stylist_model.dart';
 
 class ProductService {
-  static const String baseUrl =
-      "https://apibrize.brizindia.com/api/product-service-saloon";
+  static const String baseUrl = "https://apibrize.brizindia.com/api/product-service-saloon";
 
   static const String categoryUrl = "https://apibrize.brizindia.com/api/type";
-  static const String stylistUrl =
-      "https://apibrize.brizindia.com/api/stylists";
+  static const String stylistUrl = "https://apibrize.brizindia.com/api/stylists";
 
   static Future<List<Product>> fetchProducts({
     String? type,

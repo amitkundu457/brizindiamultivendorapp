@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/views/dashboard/dashboard.dart';
+import 'package:flutter_application_1/views/dashboard/saloon_dashboard.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
-// import 'saloon_dashboard.dart';
 import 'jewellery_dashboard.dart';
 import 'restaurant_dashboard.dart';
 
@@ -46,11 +45,11 @@ class _MainDashboardLoaderState extends State<MainDashboardLoader> {
 
     final role = _user!.roles.first.name.toLowerCase();
     if (role == "saloon") {
-      return DashboardPage(user: _user!);
+      return Saloon_DashboardPage(user: _user!);
     } else if (role == "jwellery") {
       return JewelleryDashboard(user: _user!);
-    } else if (role == "restaurant") {
-      return RestaurantDashboard(user: _user!);
+    } else if (role == "resturant") {
+      return RestaurantDashboard_Page(user: _user!);
     } else {
       return const Scaffold(body: Center(child: Text("Unknown role")));
     }
