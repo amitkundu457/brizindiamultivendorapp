@@ -1,0 +1,237 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../View/Jewellery_View/HomePage/Home_Screen.dart';
+import '../../View/Restrunt_View/RestroHome_Page/RestroHome_Screen.dart';
+
+class LoginProvider with ChangeNotifier {
+  String? _accessToken;
+
+  String? get accessToken => _accessToken;
+  String? profileImageUrl;
+  String? imageUrl;
+  String? userName;
+  String? userId;
+
+  // Load token from SharedPreferences when the app starts
+  Future<void> loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    _accessToken = prefs.getString('accessToken'); // Fetch token from SharedPreferences
+    print('Loaded Access Token: $_accessToken');
+  }
+
+  // Login method
+  Future<void> login(String email, String password, BuildContext context) async {
+    final url = 'https://api.equi.co.in/api/login'; // Login API URL
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'email': email, 'password': password}),
+      );
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData.containsKey('access_token')) {
+          _accessToken = responseData['access_token']; // Save the access token
+
+          // Save token to SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('accessToken', _accessToken!);
+          print('Saved Access Token: ${prefs.getString('accessToken')}');
+
+          // Fetch owner type after login
+          await _fetchOwnerType(context);
+        } else {
+          print('Invalid API Response: Missing "access_token".');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Unexpectedjhgtre server response.')),
+          );
+        }
+      } else {
+        print('Login failed with status code: ${response.statusCode}');
+        print('Error Body: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed. Please check your credentials.')),
+        );
+      }
+    } catch (error) {
+      print('Error during login: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed. Please try again.')),
+      );
+    }
+  }
+
+  // Fetch owner type using the token
+  Future<void> _fetchOwnerType(BuildContext context) async {
+    final url = 'https://api.equi.co.in/api/auth/agme'; // Owner identification API
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Authorization': 'Bearer $_accessToken'}, // Pass the token in the Authorization header
+      );
+
+      print('Owner Type API Status Code: ${response.statusCode}');
+      print('Owner Type API Response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        // Extract the owner type from the roles array
+        if (responseData.containsKey('roles') &&
+            responseData['roles'] is List &&
+            responseData['roles'].isNotEmpty) {
+          String ownerType = responseData['roles'][0]['name']; // Extract the "name" field from the first role
+
+          // Redirect based on owner type
+          if (ownerType.toLowerCase() == "jwellery") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => JwelHome_Screen()),
+            );
+          } else if (ownerType.toLowerCase() == "resturant") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => RestroHome_Screen()),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Invalid owner type. Please contact support.')),
+            );
+          }
+        } else {
+          print('Owner Type API Response Missing or Invalid "roles".');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Unexpected server response.')),
+          );
+        }
+      } else {
+        print('Failed to fetch owner type with status code: ${response.statusCode}');
+        print('Error Body: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch owner type. Please try again.')),
+        );
+      }
+    } catch (error) {
+      print('Error during owner type fetch: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching owner details. Please try again.')),
+      );
+    }
+  }
+}
+
+
+
+// importent code hai login provider ok
+// import 'dart:convert';
+// import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:jewellery_apps/View/Jewellery_View/HomePage/Home_Screen.dart';
+// import 'package:flutter/cupertino.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+//
+// import '../../Model/Jewellery_Model/LocalDataModel.dart';
+// import '../../View/Restrunt_View/RestroInvoice_Screen.dart';
+//
+// class LoginProvider with ChangeNotifier {
+//   String? _accessToken;
+//
+//   String? get accessToken => _accessToken;
+//   String? imageUrl;
+//   String? userName;
+//   String? userId;
+//   String? profileImageUrl;
+//   // Load token from SharedPreferences when app starts
+//   Future<void> loadToken() async {
+//     final prefs = await SharedPreferences.getInstance();
+//     _accessToken = prefs.getString('accessToken'); // Fetch token from SharedPreferences
+//     print('Loaded Access Token: $_accessToken');
+//    // notifyListeners();
+//   }
+//
+//   // Login method with token and image loading
+//   Future<void> login(String email, String password, BuildContext context) async {
+//     final url = 'https://api.equi.co.in/api/login'; // Login API
+//     try {
+//       final response = await http.post(
+//         Uri.parse(url),
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: json.encode({
+//           'email': email,
+//           'password': password,
+//         }),
+//       );
+//
+//       print('Response Status Code: ${response.statusCode}');
+//       print('Response Body: ${response.body}');
+//
+//       if (response.statusCode == 200) {
+//         final responseData = json.decode(response.body);
+//         _accessToken = responseData['access_token'];  // Store token in _accessToken
+//
+//         // Save the token to SharedPreferences
+//         final prefs = await SharedPreferences.getInstance();
+//         await prefs.setString('accessToken', _accessToken!);
+//         print('Saved Access Token: ${prefs.getString('accessToken')}');
+//
+//         // Navigate to Home Screen
+//         Navigator.pushReplacement(
+//           context,
+//           MaterialPageRoute(builder: (context) => JwelHome_Screen()),
+//         );
+//         Navigator.pushReplacement(
+//           context,
+//           MaterialPageRoute(builder: (context) => RestroInvoice_Screen()),
+//         );
+//       } else {
+//         print('Login failed with status code: ${response.statusCode}');
+//         print('Error Body: ${response.body}');
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           SnackBar(content: Text('Login failed. Please check your credentials.')),
+//         );
+//       }
+//     } catch (error) {
+//       print('Error during login: $error');
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(content: Text('Login failed. Please try again.')),
+//       );
+//     }
+//   }
+//
+//   // Fetch user profile details after login
+//   Future<void> fetchUserProfile() async {
+//     if (_accessToken != null) {
+//       try {
+//         final profileResponse = await http.get(
+//           Uri.parse('https://api.equi.co.in/api/login'), // Replace with your profile API
+//           headers: {
+//             'Authorization': 'Bearer $_accessToken', // Use the access token from SharedPreferences
+//           },
+//         );
+//
+//         if (profileResponse.statusCode == 200) {
+//           final profileData = json.decode(profileResponse.body);
+//           userName = profileData['name']; // Assuming the field is 'name'
+//           userId = profileData['id']; // Assuming the field is 'id'
+//           profileImageUrl = profileData['profile_image_url']; // Assuming the field is 'profile_image_url'
+//         } else {
+//           print('Failed to load profile');
+//         }
+//       } catch (error) {
+//         print('Error fetching profile: $error');
+//       }
+//     }
+//   }
+// }
+//
